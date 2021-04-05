@@ -2,8 +2,9 @@
 # Model: http://arxiv.org/abs/cond-mat/0211175
 
 
-from mesa import Agent, Model
+from mesa import Agent, Model, model
 from mesa.time import RandomActivation
+import matplotlib.pyplot as plt
 
 class MoneyAgent(Agent):
     '''An agent with fixed initial wealth.'''
@@ -12,8 +13,12 @@ class MoneyAgent(Agent):
         self.wealth = 1
 
     def step(self):
-        # The agent’s step will go here.
-        # For demostration purposes we will print the agent‘s unique_id
+        if self.wealth == 0:
+            return
+        other_agent = self.random.choice(self.model.schedule.agents)
+        other_agent.wealth += 1
+        self.wealth -= 1
+        
         print(f'Hi, I am agent {self.unique_id}, and I have {self.wealth} unit of money.')
 
 class MoneyModel(Model):
