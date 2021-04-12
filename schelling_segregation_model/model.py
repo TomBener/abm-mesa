@@ -3,9 +3,11 @@ from mesa.time import RandomActivation
 from mesa.space import SingleGrid
 from mesa.datacollection import DataCollector
 
+
 class SchellingAgent(Agent):
     '''
-    Schelling segregation agent
+    Define the Agent
+    One of the core class
     '''
 
     def __init__(self, pos, model, agent_type):
@@ -15,27 +17,44 @@ class SchellingAgent(Agent):
         Args:
             unique_id: Unique identifier for the agent.
             x, y: Agent initial location.
-            agent_type: Indicator for the agengt’s type (minority = 1, majority = 1)
+            agent_type: Indicator for the agengt’s type (minority = 1, majority = 0)
         '''
         super().__init__(pos, model)
         self.pos = pos
         self.type = agent_type
 
     def step(self):
+        # Iterate to see how many similar agents at the beginning (it's 0 initially)
         similiar = 0
+        # `neighbor_iter` method is defined in mesa/space.py/Grid, in order to iterate over position neighbours.
         for neighbor in self.model.grid.neighbor_iter(self.pos):
-            if neighbor.type == self.type:
+            if neighbor.type == self.type:  # Why this syntax works? Need to look up it.
                 similiar += 1
 
         # If unhappy, move
+        # If around similar agents are less homophily (3), then move to an empty cell.
+        # model.homophily is defined in the Model class below.
         if similiar < self.model.homophily:
+            # `move_to_empty` is defined in mesa/space.py/Grid
             self.model.grid.move_to_empty(self)
+        # If around similar agents are not less homophily (3), then plus the similar agents.
         else:
-            self.modle.happy += 1
+            self.model.happy += 1
 
 
 class Schelling(Model):
-    '''Schelling segregation model'''
+    '''
+    Define the Model
+    The other core class
+    '''
+
+    '''
+    mesa/space.py/Grid has 3 properties:
+        - width
+        - height
+        - torus
+    So `minority_pc` and `homophily` are customized properties here.
+    '''
     def __init__(self, height = 20, width = 20, density = 0.8,
     minority_pc = 0.2, homophily = 3):
         self.height = height
@@ -44,13 +63,22 @@ class Schelling(Model):
         self.minority_pc = minority_pc
         self.homophily = homophily
 
+        # Scheduler is used `RandomActivation`, which is defined in mesa/time.py/RandomActivation.
+        # Specify *time* of the model.
         self.schedule = RandomActivation(self)
+        # `SingleGrid` is defined in mesa/space.py/SingleGrid.
+        # Grid which strictly enforces one object per cell.
+        # Specify *space* of the model.
+        # width, height, torus are the native properties.
         self.grid = SingleGrid(width, height, torus = True)
 
+        # Without happy agents initially
         self.happy = 0
+        # DataCollector is a dictory, that's all I know.
         self.datacollector = DataCollector(
             {'happy': 'happy'},  # Model-level count of happy agents
             # For testing purposes, agent’s individual x and y
+            # lambda function, need to strenghen here.
             {'x': lambda a: a.pos[0], 'y': lambda a: a.pos[1]},
         )
 
