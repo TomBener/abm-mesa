@@ -74,11 +74,14 @@ class Schelling(Model):
 
         # Without happy agents initially
         self.happy = 0
-        # DataCollector is a dictory, that's all I know.
+        # DataCollector collects 3 types of data:
+        # model-level data, agent-level data, and tables
+        # A DataCollector is instantiated with 2 dictionaries of reporter names and associated variable names or functions for each, one for model-level data and one for agent-level data; a third dictionary provides table names and columns. Variable names are converted into functions which retrieve attributes of that name.
         self.datacollector = DataCollector(
-            {'happy': 'happy'},  # Model-level count of happy agents
+            {'happy': 'happy'},  # Model-level count of happy agents, only one agent-level reporter
             # For testing purposes, agent’s individual x and y
-            # lambda function, need to strenghen here.
+            # lambda function, it is like:
+            # lambda x, y: x ** y
             {'x': lambda a: a.pos[0], 'y': lambda a: a.pos[1]},
         )
 
@@ -86,7 +89,9 @@ class Schelling(Model):
         # We use grid iterator that returns
         # the coordinates of a cell as well
         # as its contents. (coord_iter)
+        # coord_iter is defined in mesa/space.py, which, which returns coordinates as well as cell contents.
         for cell in self.grid.coord_iter():
+            # Grid cells are indexed by [x][y] (tuple), where [0][0] is assumed to be the bottom-left and [width-1][height-1] is the top-right. If a grid is toroidal, the top and bottom, and left and right, edges wrap to each other.
             x = cell[1]
             y = cell[2]
             if self.random.random() < self.density:
@@ -96,12 +101,20 @@ class Schelling(Model):
                     agent_type = 0
 
                 agent = SchellingAgent((x, y), self, agent_type)
+                # position_agent is defined in mesa/space.py. Position an agent on the grid. This is used when first placing agents!
                 self.grid.position_agent(agent, (x, y))
+                # schedule.add() method is defined in mesa/time.py.
+                # Add an Agent object to the schedule.
+                # 
+                # Aggs:
+                #   agent: An Agent to be added to the schedule. Note: the agent must have a step() method. 
                 self.schedule.add(agent)
 
         self.running = True
+        # datacollector.collect() method is defined in mesa/datacollection.py. When the collect(…) method is called, it collects these attributes and executes these functions one by one and store the results.
         self.datacollector.collect(self)
 
+    # Oh, I did’t understand step(…) method previously. Now I know as a consequential method, it executes all stages for all agents.
     def step(self):
         '''
         Run one step of the model. If all agents are happy, halt the model.
@@ -111,5 +124,6 @@ class Schelling(Model):
         # collect data
         self.datacollector.collect(self)
 
+        # Method get_agent_count is defined in mesa/time.py. It returns the current number agents in the queue. 
         if self.happy == self.schedule.get_agent_count():
             self.running = False
