@@ -127,3 +127,5 @@ class Schelling(Model):
         # Method get_agent_count is defined in mesa/time.py. It returns the current number agents in the queue. 
         if self.happy == self.schedule.get_agent_count():
             self.running = False
+
+# comments on 2021/04/26 22:36
