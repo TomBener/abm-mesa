@@ -24,6 +24,7 @@ class TreeCell(Agent):
         '''
         super().__init__(pos, model)
         self.pos = pos
+        # Initial condition is 'Fine'. That’s fine.
         self.condition = 'Fine'
 
         def step(self):
