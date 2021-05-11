@@ -5,6 +5,7 @@ from mesa.time import RandomActivation
 
 from .agent import TreeCell
 
+
 class ForestFire(Model):
     '''
     Simple Forest Fire Model.
@@ -27,9 +28,11 @@ class ForestFire(Model):
         in random order, with the order reshuffled every step.
         This is equivalent to the NetLogo 'ask agent…' and is generally the
         default behavior for an ABM
+        '''
+
         self.schedule = RandomActivation(self)
         self.grid = Grid(height, width, torus=False)
-        '''
+
         self.datacollector = DataCollector(
             {
                 # lambda function, it is like: lambda x, y: x ** y
