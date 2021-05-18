@@ -1,11 +1,12 @@
-# Defines the behaviours of an individual cell, which can be in two states: DEAD or ALIVE
+# Defines the behaviours of an individual cell,
+# which can be in two states: DEAD or ALIVE
 
 from mesa import Agent
 
 
 class Cell(Agent):
-
     # Represent a simple ALIVE or DEAD cell in the simulation.
+
     DEAD = 0
     ALIVE = 1
 
@@ -15,13 +16,13 @@ class Cell(Agent):
         self.x, self.y = pos
         self.state = init_state
         # Single Pre Underscore is used for internal use. Most of us don't use it because of that reason.
-        # single pre underscore doesn't stop you from accessing the single pre underscore variable.
-        # SO, Single Pre Underscore is only meant to use for the internal use.
+        # Single pre underscore doesn't stop you from accessing the single pre underscore variable.
+        # So, Single Pre Underscore is only meant to use for the internal use.
         self._nextstate = None
 
         # Single Post Underscore: To avoid conflicts with the Python Keywords
         # Double Pre Underscore: Tells the Python interpreter to rewrite the attribute name of subclasses to avoid naming conflicts.
-        # Double Pre And Post Underscores: magic methods or dunder methods
+        # Double Pre And Post Underscores: magic methods or dunder methods.
 
     @property
     def isAlive(self):
