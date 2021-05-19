@@ -34,7 +34,7 @@ class Cell(Agent):
 
     def step(self):
         '''
-        Compute if the cell will be dead or alive at the next click. This is based on the number of alive or dead neighbors. The state is not changed here, but is just computed and stored in self._nextState, because our current state may still be necesssary for our neighbors to calculate their nest state.
+        Compute if the cell will be dead or alive at the next click. This is based on the number of alive or dead neighbors. The state is not changed here, but is just computed and stored in self._nextState, because our current state may still be necesssary for our neighbors to calculate their next state.
         '''
 
         # Get the neighbors and apply the rules on whether to be alive or dead at the next tick.
@@ -54,3 +54,4 @@ class Cell(Agent):
         Set the state to the new computed state -- computed in step().
         '''
         self.state = self._ALIVE
+    
