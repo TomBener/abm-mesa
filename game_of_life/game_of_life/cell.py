@@ -24,20 +24,43 @@ class Cell(Agent):
         # Double Pre Underscore: Tells the Python interpreter to rewrite the attribute name of subclasses to avoid naming conflicts.
         # Double Pre And Post Underscores: magic methods or dunder methods.
 
+    '''
+    A shortcut for creating readonly properties.
+
+    @property
+    def x(self):
+        return self._x
+
+    is equivalent to
+
+    def getx(self):
+        return self._x
+    x = property(getx)
+    '''
     @property
     def isAlive(self):
         return self.state == self.ALIVE
 
     @property
     def neighbors(self):
+        # neighbor_iter: Iterates over position neighbours.
+        # moore: Noolean for whether to use Moore neighborhood (
+        # including diagonals) or Von Neumann (only up/down/left/right).
+        # i.e. moore: bool = True (default) 
         return self.model.grid.neighbor_iter((self.x, self.y), True)
 
     def step(self):
         '''
-        Compute if the cell will be dead or alive at the next click. This is based on the number of alive or dead neighbors. The state is not changed here, but is just computed and stored in self._nextState, because our current state may still be necesssary for our neighbors to calculate their next state.
+        Compute if the cell will be dead or alive at the next click.
+        This is based on the number of alive or dead neighbors.
+        The state is not changed here, but is just computed and stored
+        in self._nextState, because our current state may still be
+        necesssary for our neighbors to calculate their next state.
         '''
 
         # Get the neighbors and apply the rules on whether to be alive or dead at the next tick.
+        # Bear in mind the usage of `neighbor.isAlive`.
+        # This is List Comprehension: newlist = [expression for item in iterable if condition == True]
         live_neighbors = sum(neighbor.isAlive for neighbor in self.neighbors)
 
         # Assume nextState is unchanged, unless changed below.

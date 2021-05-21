@@ -17,8 +17,9 @@ class ConwaysGameOfLife(Model):
         # Set up the grid and schedule.
 
         # Use SimultaneousActivation which simulates all the cells
-        # computing their next state simultaneously.
-        # This needs to be done because each cell's next state depends on the current state of all its neighbors -- before they've changed
+        # Computing their next state simultaneously.
+        # This needs to be done because each cell's next state depends on
+        # the current state of all its neighbors -- before they've changed
         self.schedule = SimultaneousActivation(self)
 
         # Use a single grid, where edges wrap around.
@@ -30,7 +31,9 @@ class ConwaysGameOfLife(Model):
             cell = Cell((x, y), self)
             if self.random.random() < 0.1:
                 cell.state = cell.ALIVE
+            # place_agent: Position an agent on the Grid, and set its pos variable
             self.grid.place_agent(cell, (x, y))
+            # add(): Add an agent object to the schedule
             self.schedule.add(cell)
 
         self.running = True
@@ -39,4 +42,5 @@ class ConwaysGameOfLife(Model):
         '''
         Have the schedular advance each cell by one step
         '''
+        # step(): Execute the step of all the agents, one at a time.
         self.schedule.step()
